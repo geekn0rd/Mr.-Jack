@@ -13,36 +13,33 @@ int main() {
 		{"Miss Stealthy", 1}, {"Sgt Goodley", 0}, {"William Gull", 1}
 	};
 	// Ascii chars that look similar to the tiles
-	int ori[4] = {193, 195, 194, 180};
+	int orientations[4] = {193, 195, 194, 180};
+	// giving each detective a dedicated id [0,3]
+	struct detective dets[3] = {
+		{"Holmes", {1, 0}}, {"Watson", {1, 4}}, {"Toby", {4, 2}}
+	};
 	struct node *head = NULL;
-	
 	srand(time(0));
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			int o = rand() % 4;
+			int id = rand() % 9;
+			while (is_found(head, id)) {
+				id = rand() % 9;
+			}
+			push_back(&head, id, 1, o, i + 1, j + 1); 
+		}
+	}
+	print_tiles(head, suspects, orientations);
+	print_dets(dets);
+//	print_by_xy(2, 2, head, suspects, orientations, dets);
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
-			if (i > 0 && j > 0 && i < 4 && j < 4) {
-			int n = rand() % 4;
-			printf(" %c, clear %c ", ori[n], 179);
-			}
-			else {
-				printf("   0 ");
-			}
-		
+			print_by_xy(i, j, head, suspects, orientations, dets);
 		}
-		printf("\n======================\n");
+		printf("\n");
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	return 0;
