@@ -19,27 +19,15 @@ int main() {
 		{"Holmes", {1, 0}}, {"Watson", {1, 4}}, {"Toby", {4, 2}}
 	};
 	struct node *head = NULL;
-	srand(time(0));
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			int o = rand() % 4;
-			int id = rand() % 9;
-			while (is_found(head, id)) {
-				id = rand() % 9;
-			}
-			push_back(&head, id, 1, o, i + 1, j + 1); 
-		}
-	}
-	print_tiles(head, suspects, orientations);
-	print_dets(dets);
-//	print_by_xy(2, 2, head, suspects, orientations, dets);
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			print_by_xy(i, j, head, suspects, orientations, dets);
-		}
-		printf("\n");
-	}
-
+	init_tiles(&head);
+//	print_tiles(head, suspects, orientations);
+//	print_dets(dets);
+	print_map(head, suspects, orientations, dets);
+	replace_tiles(head);
+	print_map(head, suspects, orientations, dets);
+	rotate_tile(head);
+	print_map(head, suspects, orientations, dets);
+	
 	
 	
 	return 0;
