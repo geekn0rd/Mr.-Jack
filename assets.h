@@ -40,6 +40,8 @@ void replace_tiles(struct node *head);
 void rotate_tile(struct node *head);
 void print_map(struct node *head, struct suspect *susz, int *oriens, struct detective *dets);
 void init_tiles(struct node **head);
+void dets_action(int i, struct detective *dets);
+void joker_action(int round, struct detective *dets);
 
 
 

@@ -102,7 +102,7 @@ void replace_tiles(struct node *head) {
 }
 
 void rotate_tile(struct node *head) {
-	printf("Enter row & column of the tile you want to move: ");
+	printf("Enter row & column of the tile you want to rotate: ");
 	int r, c, x, d;
 	scanf("%d %d", &r, &c);
 	struct node *i = head;
@@ -177,3 +177,107 @@ void init_tiles(struct node **head) {
 		}
 	}
 }
+
+void joker_action(int round, struct detective *dets) {
+	int r, c;
+	if (round % 2 == 0) {
+		printf("Enter row & column of the detective you want to move or if you don't want to move any enter -1 -1: ");
+		scanf("%d %d", &r, &c);
+		if (r == -1 && c == -1) {
+			return;
+		}
+	}else {
+		printf("Enter row & column of the detective you want to move: ");
+		scanf("%d %d", &r, &c);
+	}
+	for (int i = 0; i < 3; i++) {
+		if (dets[i].p.r == r && dets[i].p.c == c) {
+			if (c == 0) {
+				dets[i].p.r -= 1;
+				if ( dets[i].p.r == 0) {
+					dets[i].p.c += 1;
+				}
+				return;
+			}
+			else if (c == 4) {
+				dets[i].p.r += 1;
+				if (dets[i].p.r == 4) {
+					dets[i].p.c -= 1;
+				}
+				return;	
+			}
+			else if (r == 0) {
+				dets[i].p.c += 1;
+				if (dets[i].p.c == 4) {
+					dets[i].p.r += 1;
+				}
+				return;
+			}
+			else {
+				dets[i].p.c -= 1;
+				if (dets[i].p.c == 0) {
+					dets[i].p.r -= 1;
+				}
+				return;
+			}		
+		}
+	}
+	printf("Entered row & column are wrong!\n");
+	return;
+	
+}
+
+void dets_action(int i, struct detective *dets) {
+	int s;
+	printf("1)one step 2)two steps : ");
+	scanf("%d", &s);
+	if (dets[i].p.c == 0) {
+		if (dets[i].p.r == 1 && s == 2) {
+			dets[i].p.c += 2;
+			dets[i].p.r -= 1;
+			return;
+		}
+		dets[i].p.r -= s;
+		if (dets[i].p.r == 0) {
+			dets[i].p.c += 1;
+		}
+		return;
+	}
+	else if (dets[i].p.c == 4) {
+		if (dets[i].p.r == 4 && s == 2) {
+			dets[i].p.c -= 2;
+			dets[i].p.r += 1;
+			return;
+		}
+		dets[i].p.r += s;
+		if (dets[i].p.r == 4) {
+			dets[i].p.c -= 1;
+			}
+		return;	
+		}
+	else if (dets[i].p.r == 0) {
+		if (dets[i].p.c == 3 && s == 2) {
+			dets[i].p.r += 2;
+			dets[i].p.c += 1;
+			return;
+		}
+		dets[i].p.c += s;
+		if (dets[i].p.c == 4) {
+			dets[i].p.r += 1;
+		}
+		return;
+	}
+	else {
+		if (dets[i].p.c == 1 && s == 2) {
+			dets[i].p.r -= 2;
+			dets[i].p.c -= 1;
+			return;
+		}
+		dets[i].p.c -= s;
+		if (dets[i].p.c == 0) {
+			dets[i].p.r -= 1;
+		}
+		return;
+	}
+}
+

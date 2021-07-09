@@ -5,6 +5,8 @@
 #include <time.h>
 #include <stdlib.h>
 
+int round = 1;
+
 int main() {
 	// giving each suspect a dedicated id [0,8]
 	struct suspect suspects[9] = {
@@ -20,14 +22,19 @@ int main() {
 	};
 	struct node *head = NULL;
 	init_tiles(&head);
-//	print_tiles(head, suspects, orientations);
-//	print_dets(dets);
+	print_tiles(head, suspects, orientations);
+	print_dets(dets);
 	print_map(head, suspects, orientations, dets);
 	replace_tiles(head);
 	print_map(head, suspects, orientations, dets);
 	rotate_tile(head);
 	print_map(head, suspects, orientations, dets);
-	
+	dets_action(0, dets);
+	print_map(head, suspects, orientations, dets);
+	dets_action(0, dets);
+	print_map(head, suspects, orientations, dets);
+	dets_action(0, dets);
+	print_map(head, suspects, orientations, dets);
 	
 	
 	return 0;
