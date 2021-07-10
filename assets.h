@@ -42,6 +42,8 @@ void print_map(struct node *head, struct suspect *susz, int *oriens, struct dete
 void init_tiles(struct node **head);
 void dets_action(int i, struct detective *dets);
 void joker_action(int round, struct detective *dets);
+struct place *horizontal_look(struct place det, struct node *head, int *size);
+struct place *vertical_look(struct place det, struct node *head, int *size);
 
 
 

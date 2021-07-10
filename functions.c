@@ -159,13 +159,13 @@ void init_tiles(struct node **head) {
 				int o, id;
 				if (i == 0 && j == 0) {
 					o = 1;
-			}
-			else if (i == 0 && j == 2) {
-				o = 3;
-			}
-			else if (i == 2 && j == 1) {
-				o = 0;
-			}
+				}
+				else if (i == 0 && j == 2) {
+					o = 3;
+				}
+				else if (i == 2 && j == 1) {
+					o = 0;
+				}
 			else {
 				o = rand() % 4;
 			}
@@ -280,4 +280,124 @@ void dets_action(int i, struct detective *dets) {
 		return;
 	}
 }
+
+struct place *horizontal_look(struct place det, struct node *head, int *size) {
+	int x = 0;
+	struct place *p = NULL;
+	if (det.c == 0) {
+		int c = det.c + 1;
+		int r = det.r;
+		struct node *i = head;
+		for (i; i != NULL; i = i->next) {
+			if (i->t.p.c == c && i->t.p.r == r) {
+				if (i->t.orien == 1) {
+					*size = x;
+					return p;
+				}
+				else {
+					p = realloc(p, ++x * sizeof(struct place));
+					p[x - 1] = i->t.p;
+					c += 1;
+					if (i->t.orien == 3) {
+						*size = x;
+						return p;
+					}
+					if (x == 3) {
+						*size = x;
+						return p;
+					}
+					i = head;
+				}
+			}
+		}
+	}
+	else {
+		int c = det.c - 1;
+		int r = det.r;
+		struct node *i = head;
+		for (i; i != NULL; i = i->next) {
+			if (i->t.p.c == c && i->t.p.r == r) {
+				if (i->t.orien == 3) {
+					*size = x;
+					return p;
+				}
+				else {
+					p = realloc(p, ++x * sizeof(struct place));
+					p[x - 1] = i->t.p;
+					c -= 1;
+					if (i->t.orien == 1) {
+						*size = x;
+						return p;
+					}
+					if (x == 3) {
+						*size = x;
+						return p;
+					}
+					i = head;
+				}
+			}
+		}
+	}
+}
+
+struct place *vertical_look(struct place det, struct node *head, int *size) {
+	int x = 0;
+	struct place *p = NULL;
+	if (det.r == 0) {
+		int c = det.c;
+		int r = det.r + 1;
+		struct node *i = head;
+		for (i; i != NULL; i = i->next) {
+			if (i->t.p.c == c && i->t.p.r == r) {
+				if (i->t.orien == 2) {
+					*size = x;
+					return p;
+				}
+				else {
+					p = realloc(p, ++x * sizeof(struct place));
+					p[x - 1] = i->t.p;
+					r += 1;
+					if (i->t.orien == 0) {
+						*size = x;
+						return p;
+					}
+					if (x == 3) {
+						*size = x;
+						return p;
+					}
+					i = head;
+				}
+			}
+		}
+	}
+	else {
+		int c = det.c;
+		int r = det.r - 1;
+		struct node *i = head;
+		for (i; i != NULL; i = i->next) {
+			if (i->t.p.c == c && i->t.p.r == r) {
+				if (i->t.orien == 0) {
+					*size = x;
+					return p;
+				}
+				else {
+					p = realloc(p, ++x * sizeof(struct place));
+					p[x - 1] = i->t.p;
+					r -= 1;
+					if (i->t.orien == 2) {
+						*size = x;
+						return p;
+					}
+					if (x == 3) {
+						*size = x;
+						return p;
+					}
+					i = head;
+				}
+			}
+		}
+	}
+}
+
+
 
