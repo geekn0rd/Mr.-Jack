@@ -44,6 +44,7 @@ void init_tiles(struct node **head);
 int determine_jack(struct node *head);
 void dets_action(int det_id, struct detective *dets);
 void joker_action(int round, struct detective *dets);
+void lens_action(struct node *head, struct suspect *s, int *score);
 struct place *horizontal_trace(struct place det, struct node *head, int *size);
 struct place *vertical_trace(struct place det, struct node *head, int *size);
 

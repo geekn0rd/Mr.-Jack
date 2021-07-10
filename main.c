@@ -6,9 +6,10 @@
 #include <stdlib.h>
 
 int round = 1;
+int holmes_score = 0;
+int jack_score = 0;
 
 int main() {
-	
 	// giving each suspect a dedicated id [0,8]
 	struct suspect suspects[9] = {
 		{"Insp. Lestrade", 0}, {"Jeremy Bert", 1}, {"John Pizer", 1},
@@ -23,14 +24,14 @@ int main() {
 	};
 	struct node *head = NULL;
 	init_tiles(&head);
-	head->t.is_sus = 0;
 	int mrJack = determine_jack(head);
 	print_tiles(head, suspects, orientations);
 	print_dets(dets);
+	printf("Mr.Jack is : %s\n", suspects[mrJack].name);
 	print_map(head, suspects, orientations, dets);
-	printf("Mr.Jack is %s\n", suspects[mrJack].name);
-	//rotate_tile(head);
-	//print_map(head, suspects, orientations, dets);
+ 	printf("\n");
+	lens_action(head, suspects, &holmes_score);
+	print_map(head, suspects, orientations, dets);
 	
 	return 0;
 }

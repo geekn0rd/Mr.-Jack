@@ -58,7 +58,7 @@ void print_by_rc(int r, int c, struct node *head, struct suspect *s, int *o, str
 	for (int i = 0; i < 3; i++) {
 		if (dets[i].p.r == r && dets[i].p.c == c) {
 			if (r == 0 || r == 4) {
-				printf("	 [%s]	 ", dets[i].name);
+				printf("    [%s]	 ", dets[i].name);
 			}
 			else {
 				printf(" [%s] ", dets[i].name);
@@ -200,6 +200,23 @@ int determine_jack(struct node *head) {
 		if (i->t.sus_id == jack_id) {
 			i->t.is_sus = -1;
 			return jack_id;
+		}
+	}
+}
+
+void lens_action(struct node *head, struct suspect *s, int *score) {
+	int id = rand() % 9;
+	struct node *i = head;
+	for (i; i != NULL; i = i->next) {
+		if (i->t.sus_id == id) {
+			if (i->t.is_sus == 1) {
+				i->t.is_sus = 0;
+				printf("%s\n", s[id].name);
+				*score += s[id].hourglass;
+				return;
+			}
+			i = head;
+			id = rand() % 9;
 		}
 	}
 }
