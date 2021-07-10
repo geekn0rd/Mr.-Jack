@@ -23,9 +23,12 @@ int main() {
 	};
 	struct node *head = NULL;
 	init_tiles(&head);
+	head->t.is_sus = 0;
+	int mrJack = determine_jack(head);
 	print_tiles(head, suspects, orientations);
 	print_dets(dets);
 	print_map(head, suspects, orientations, dets);
+	printf("Mr.Jack is %s\n", suspects[mrJack].name);
 	//rotate_tile(head);
 	//print_map(head, suspects, orientations, dets);
 	

@@ -30,29 +30,48 @@ void push_back(struct node **head, int id, int is_sus, int ori, int i, int j) {
 	current->next = nn;
 	return; 
 }
-
+// you give it row and cloumn & it prints the right thing :)
 void print_by_rc(int r, int c, struct node *head, struct suspect *s, int *o, struct detective *dets) {
 	if ((r == 0 && c == 0) || (r == 0 && c == 4) || (r == 4 && c == 0) || (r == 4 && c == 4)) {
-		printf(" [	] ");
+		if ((r == 0 && c == 4) || (r == 4 && c == 4)) {
+			printf("  	  {     }	");
+		}
+		else {
+			printf(" {	}	");
+		}
 		return;
 	}
 	else if ((r > 0 && c > 0) && (r < 4 && c < 4)) {
 		struct node *current;
 		for (current = head; current != NULL; current = current->next) {
 			if ((current->t.p.r == r && current->t.p.c == c)) {
-			printf(" [%s, %c, %4s] ", s[current->t.sus_id].name, o[current->t.orien], 
-			current->t.is_sus ? "sus" : "clear");
-			return;
+				if (current->t.is_sus != 0) {
+					printf(" (%14s, %c) ", s[current->t.sus_id].name, o[current->t.orien]);
+				}
+				else {
+					printf(" (%17c) ",  o[current->t.orien]);	
+				}
+				return;
 			}
 		}
 	}
 	for (int i = 0; i < 3; i++) {
 		if (dets[i].p.r == r && dets[i].p.c == c) {
-		printf(" [%s] ", dets[i].name);
-		return;
+			if (r == 0 || r == 4) {
+				printf("	 [%s]	 ", dets[i].name);
+			}
+			else {
+				printf(" [%s] ", dets[i].name);
+			}
+			return;
 		}
 	}
-	printf(" [	] ");
+	if (r == 0 || r == 4) {
+		printf("       [  ]	  ");
+	}
+	else{
+		printf(" [	] ");
+	}
 	return;
 }
 
@@ -115,25 +134,20 @@ void rotate_tile(struct node *head) {
 			return;
 		}
 	}
-	printf("1)clockwise 2)anticlockwise: ");
-	scanf("%d", &x);
 	printf("1)90 degrees 2)180 degrees: ");
 	scanf("%d", &d);
-	if (x == 1) {
-		if (d == 1) {
+	if (d == 1) {
+		printf("1)clockwise 2)anticlockwise: ");
+		scanf("%d", &x);
+		if (x == 1) {
 			i->t.orien += 1;
 		}
 		else {
-			i->t.orien += 2;
+			i->t.orien -= 1;
 		}
 	}
 	else {
-		if (d == 1) {
-			i->t.orien -= 1;
-		}
-		else {
-			i->t.orien -= 2;
-		}
+		i->t.orien -= 2;
 	}
 	if (i->t.orien < 0) {
 		i->t.orien += 4;
@@ -178,12 +192,24 @@ void init_tiles(struct node **head) {
 	}
 }
 
+int determine_jack(struct node *head) {
+	//srand(time(0)); niyazi nis dobare seed bedi chon cpu sarriye (to hamon saniye ast time(0)) va hamon sequence adado mide
+	int jack_id = rand() % 9;
+	struct node *i = head;
+	for (i; i != NULL; i = i->next) {
+		if (i->t.sus_id == jack_id) {
+			i->t.is_sus = -1;
+			return jack_id;
+		}
+	}
+}
+
 void joker_action(int round, struct detective *dets) {
 	int r, c;
 	if (round % 2 == 0) {
-		printf("Enter row & column of the detective you want to move or if you don't want to move any enter -1 -1: ");
+		printf("Enter row & column of the detective you want to move or if you don't want to move any enter 0 0: ");
 		scanf("%d %d", &r, &c);
-		if (r == -1 && c == -1) {
+		if (r == 0 && c == 0) {
 			return;
 		}
 	}else {
@@ -227,7 +253,8 @@ void joker_action(int round, struct detective *dets) {
 	
 }
 
-void dets_action(int i, struct detective *dets) {
+void dets_action(int det_id, struct detective *dets) {
+	int i = det_id;
 	int s;
 	printf("1)one step 2)two steps : ");
 	scanf("%d", &s);
@@ -281,7 +308,7 @@ void dets_action(int i, struct detective *dets) {
 	}
 }
 
-struct place *horizontal_look(struct place det, struct node *head, int *size) {
+struct place *horizontal_trace(struct place det, struct node *head, int *size) {
 	int x = 0;
 	struct place *p = NULL;
 	if (det.c == 0) {
@@ -340,7 +367,7 @@ struct place *horizontal_look(struct place det, struct node *head, int *size) {
 	}
 }
 
-struct place *vertical_look(struct place det, struct node *head, int *size) {
+struct place *vertical_trace(struct place det, struct node *head, int *size) {
 	int x = 0;
 	struct place *p = NULL;
 	if (det.r == 0) {

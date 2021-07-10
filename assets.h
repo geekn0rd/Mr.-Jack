@@ -22,6 +22,7 @@ struct detective {
 struct tile {
 	int sus_id;
 	int is_sus;
+	// 0 not sus : 1 sus : -1 Mr.Jack
 	int orien;
 	struct place p;
 };
@@ -40,10 +41,11 @@ void replace_tiles(struct node *head);
 void rotate_tile(struct node *head);
 void print_map(struct node *head, struct suspect *susz, int *oriens, struct detective *dets);
 void init_tiles(struct node **head);
-void dets_action(int i, struct detective *dets);
+int determine_jack(struct node *head);
+void dets_action(int det_id, struct detective *dets);
 void joker_action(int round, struct detective *dets);
-struct place *horizontal_look(struct place det, struct node *head, int *size);
-struct place *vertical_look(struct place det, struct node *head, int *size);
+struct place *horizontal_trace(struct place det, struct node *head, int *size);
+struct place *vertical_trace(struct place det, struct node *head, int *size);
 
 
 
