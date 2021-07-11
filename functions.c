@@ -94,7 +94,7 @@ void print_dets(struct detective *dets) {
 	}
 }
 
-void replace_tiles(struct node *head) {
+void exchange_action(struct node *head) {
 	printf("Enter row & column of the tile you want to move: ");
 	int r1, r2, c1, c2;
 	scanf("%d %d", &r1, &c1);
@@ -120,7 +120,7 @@ void replace_tiles(struct node *head) {
 	return;
 }
 
-void rotate_tile(struct node *head) {
+void rotation_action(struct node *head) {
 	printf("Enter row & column of the tile you want to rotate: ");
 	int r, c, x, d;
 	scanf("%d %d", &r, &c);
@@ -204,7 +204,7 @@ int determine_jack(struct node *head) {
 	}
 }
 
-void lens_action(struct node *head, struct suspect *s, int *score) {
+void alibi_action(struct node *head, struct suspect *s, int *score) {
 	int id = rand() % 9;
 	struct node *i = head;
 	for (i; i != NULL; i = i->next) {

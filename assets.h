@@ -34,19 +34,21 @@ struct node {
 
 void push_back(struct node **head, int id, int is_sus, int ori, int i, int j);
 int is_found(struct node *head, int id);
-void print_by_rc(int r, int c, struct node *head, struct suspect *s, int *o, struct detective *dets);
 void print_tiles(struct node *head, struct suspect *s, int *o);
 void print_dets(struct detective *dets);
-void replace_tiles(struct node *head);
-void rotate_tile(struct node *head);
+void print_by_rc(int r, int c, struct node *head, struct suspect *s, int *o, struct detective *dets);
 void print_map(struct node *head, struct suspect *susz, int *oriens, struct detective *dets);
 void init_tiles(struct node **head);
 int determine_jack(struct node *head);
+void exchange_action(struct node *head);
+void rotation_action(struct node *head);
 void dets_action(int det_id, struct detective *dets);
 void joker_action(int round, struct detective *dets);
-void lens_action(struct node *head, struct suspect *s, int *score);
+void alibi_action(struct node *head, struct suspect *s, int *score);
+void manhunt_stage();
 struct place *horizontal_trace(struct place det, struct node *head, int *size);
 struct place *vertical_trace(struct place det, struct node *head, int *size);
+void witness_stage();
 
 
 

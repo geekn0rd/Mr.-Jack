@@ -5,7 +5,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-int round = 1;
+int turn = 1;
 int holmes_score = 0;
 int jack_score = 0;
 
@@ -28,9 +28,6 @@ int main() {
 	print_tiles(head, suspects, orientations);
 	print_dets(dets);
 	printf("Mr.Jack is : %s\n", suspects[mrJack].name);
-	print_map(head, suspects, orientations, dets);
- 	printf("\n");
-	lens_action(head, suspects, &holmes_score);
 	print_map(head, suspects, orientations, dets);
 	
 	return 0;
