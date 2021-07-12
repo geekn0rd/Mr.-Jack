@@ -2,6 +2,7 @@
 #include "assets.h"
 #include <stdlib.h>
 #include <time.h>
+#include <windows.h>
 
 int is_found(struct node *head, int id) {
 	struct node *current;
@@ -34,10 +35,10 @@ void push_back(struct node **head, int id, int is_sus, int ori, int i, int j) {
 void print_by_rc(int r, int c, struct node *head, struct suspect *s, int *o, struct detective *dets) {
 	if ((r == 0 && c == 0) || (r == 0 && c == 4) || (r == 4 && c == 0) || (r == 4 && c == 4)) {
 		if ((r == 0 && c == 4) || (r == 4 && c == 4)) {
-			printf("  	  {     }	");
+			printf("  	         	");
 		}
 		else {
-			printf(" {	}	");
+			printf("  	 	");
 		}
 		return;
 	}
@@ -58,10 +59,10 @@ void print_by_rc(int r, int c, struct node *head, struct suspect *s, int *o, str
 	for (int i = 0; i < 3; i++) {
 		if (dets[i].p.r == r && dets[i].p.c == c) {
 			if (r == 0 || r == 4) {
-				printf("    [%s]	 ", dets[i].name);
+				printf("    [%6s]	  ", dets[i].name);
 			}
 			else {
-				printf(" [%s] ", dets[i].name);
+				printf(" [%6s] ", dets[i].name);
 			}
 			return;
 		}
@@ -106,7 +107,7 @@ void exchange_action(struct node *head) {
 		if (i->t.p.r == r1 && i->t.p.c == c1) {
 			for (j; j != NULL; j = j->next) {
 				if (j->t.p.r == r2 && j->t.p.c == c2) {
-					printf("%d %d to %d %d\n", r1, c1, r2, c2);
+					//printf("moved %d %d to %d %d\n", r1, c1, r2, c2);
 					i->t.p.r = r2;
 					i->t.p.c = c2;
 					j->t.p.r = r1;
@@ -157,12 +158,14 @@ void rotation_action(struct node *head) {
 }
 
 void print_map(struct node *head, struct suspect *susz, int *oriens, struct detective *dets) {
+	printf("\n");
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
 			print_by_rc(i, j, head, susz, oriens, dets);
 		}
 		printf("\n");
 	}
+	printf("\n");
 	return;
 }
 
@@ -192,9 +195,14 @@ void init_tiles(struct node **head) {
 	}
 }
 
-int determine_jack(struct node *head) {
+int determine_jack(struct node *head, struct suspect *s) {
 	//srand(time(0)); niyazi nis dobare seed bedi chon cpu sarriye (to hamon saniye ast time(0)) va hamon sequence adado mide
+	printf("Mr. Jack's identity will be determined (Investigator must close his/her eyes): \n");
+	Sleep(3000);
 	int jack_id = rand() % 9;
+	printf("Mr. Jack is %s.\n(this will be cleared from console in 5 seconds)\n", s[jack_id].name);
+	Sleep(5000);
+	system("cls");
 	struct node *i = head;
 	for (i; i != NULL; i = i->next) {
 		if (i->t.sus_id == jack_id) {
@@ -204,15 +212,18 @@ int determine_jack(struct node *head) {
 	}
 }
 
-void alibi_action(struct node *head, struct suspect *s, int *score) {
+void alibi_action(struct node *head, struct suspect *s, int who, int *score) {
 	int id = rand() % 9;
 	struct node *i = head;
 	for (i; i != NULL; i = i->next) {
 		if (i->t.sus_id == id) {
 			if (i->t.is_sus == 1) {
 				i->t.is_sus = 0;
-				printf("%s\n", s[id].name);
-				*score += s[id].hourglass;
+				if (who == -1) {
+					*score += s[id].hourglass;
+					printf("Mr. Jack gained %d hourglass.\n", s[id].hourglass);
+				}
+				printf("%s is cleared from suspects.\n", s[id].name);
 				return;
 			}
 			i = head;
@@ -221,51 +232,51 @@ void alibi_action(struct node *head, struct suspect *s, int *score) {
 	}
 }
 
-void joker_action(int round, struct detective *dets) {
-	int r, c;
-	if (round % 2 == 0) {
-		printf("Enter row & column of the detective you want to move or if you don't want to move any enter 0 0: ");
-		scanf("%d %d", &r, &c);
-		if (r == 0 && c == 0) {
-			return;
-		}
+void joker_action(int who, struct detective *dets) {
+	int x;
+	if (who == -1) {
+		printf("Choose one of the detectives or if you don't want to move any enter 0: \n");
+		scanf("%d", &x);
 	}else {
-		printf("Enter row & column of the detective you want to move: ");
-		scanf("%d %d", &r, &c);
+		printf("Choose one of the detectives: \n");
 	}
-	for (int i = 0; i < 3; i++) {
-		if (dets[i].p.r == r && dets[i].p.c == c) {
-			if (c == 0) {
-				dets[i].p.r -= 1;
-				if ( dets[i].p.r == 0) {
-					dets[i].p.c += 1;
-				}
-				return;
-			}
-			else if (c == 4) {
-				dets[i].p.r += 1;
-				if (dets[i].p.r == 4) {
-					dets[i].p.c -= 1;
-				}
-				return;	
-			}
-			else if (r == 0) {
-				dets[i].p.c += 1;
-				if (dets[i].p.c == 4) {
-					dets[i].p.r += 1;
-				}
-				return;
-			}
-			else {
-				dets[i].p.c -= 1;
-				if (dets[i].p.c == 0) {
-					dets[i].p.r -= 1;
-				}
-				return;
-			}		
+	printf("1)Holmes 2)Watson 3)Toby ");
+	scanf("%d", &x);
+	if (x == 0) {
+		return;
+	}
+	int i = x - 1;
+	int r = dets[i].p.r;
+	int c = dets[i].p.c;
+	if (c == 0) {
+		dets[i].p.r -= 1;
+		if ( dets[i].p.r == 0) {
+			dets[i].p.c += 1;
 		}
+		return;
 	}
-	printf("Entered row & column are wrong!\n");
+	else if (c == 4) {
+		dets[i].p.r += 1;
+		if (dets[i].p.r == 4) {
+			dets[i].p.c -= 1;
+		}
+		return;	
+	}
+	else if (r == 0) {
+		dets[i].p.c += 1;
+		if (dets[i].p.c == 4) {
+			dets[i].p.r += 1;
+		}
+		return;
+	}
+	else {
+		dets[i].p.c -= 1;
+		if (dets[i].p.c == 0) {
+			dets[i].p.r -= 1;
+		}
+		return;
+	}		
+	printf("Entered something wrong!\n");
 	return;
 	
 }
@@ -443,5 +454,487 @@ struct place *vertical_trace(struct place det, struct node *head, int *size) {
 	}
 }
 
+void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct suspect *s, int *score, struct detective *dets, int *o) {
+	if (*turn % 2 != 0) {
+		srand(time(NULL));
+		for (int i = 0; i < 4; i++) {
+			t[i].side = rand() % 2;
+		}
+		int a, b, c;
+		int x;
+		printf("Investigator should select one of these action tokens: \n");
+		for (int i = 0; i < 4; i++) {
+			printf("%d)%s ", i + 1, t[i].name[t[i].side]);
+			if (i == 3) {
+				printf("\n");
+			}
+		}
+		scanf("%d", &x);
+		a = x - 1;
+		switch (x) {
+			case(1) :
+				if (t[0].side == 0) {
+					alibi_action(head, s, 1, score);
+				}
+				else {
+					dets_action(0, dets);
+				}
+				break;
+			case(2) :
+				if (t[1].side == 0) {
+					dets_action(2, dets);
+				}
+				else {
+					dets_action(1, dets);
+				}
+				break;
+			case(3) :
+				if (t[2].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					exchange_action(head);
+				}
+				break;
+			case(4) :
+				if (t[3].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					joker_action(1, dets);
+				}
+				break;
+			default :
+				printf("wrong button selected!\n Game Aborted.\n");
+				exit(-1);										
+		}
+		Sleep(2500);
+		system("cls");
+		print_map(head, s, o, dets);
+		printf("Mr. Jack should select one of these action tokens: \n");
+		for (int i = 0; i < 4; i++) {
+			if (i == a) {		
+				continue;
+			}
+			printf("%d)%s ", i + 1, t[i].name[t[i].side]);
+			if (i == 3) {
+				printf("\n");
+			}
+		}
+		scanf("%d", &x);
+		b = x - 1;
+		switch (x) {
+			case(1) :
+				if (t[0].side == 0) {
+					alibi_action(head, s, -1, score);
+				}
+				else {
+					dets_action(0, dets);
+				}
+				break;
+			case(2) :
+				if (t[1].side == 0) {
+					dets_action(2, dets);
+				}
+				else {
+					dets_action(1, dets);
+				}
+				break;
+			case(3) :
+				if (t[2].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					exchange_action(head);
+				}
+				break;
+			case(4) :
+				if (t[3].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					joker_action(-1, dets);
+				}
+				break;
+			default :
+				printf("Wrong button selected!\n Game Aborted.\n");
+				exit(-1);										
+		}
+		Sleep(2500);
+		system("cls");
+		print_map(head, s, o, dets);
+		printf("Mr. Jack should select one of these action tokens: \n");
+		for (int i = 0; i < 4; i++) {
+			if (i == a || i == b) {		
+				continue;
+			}
+			printf("%d)%s ", i + 1, t[i].name[t[i].side]);
+			if (i == 3) {
+				printf("\n");
+			}
+		}
+		scanf("%d", &x);
+		c = x - 1;
+		switch (x) {
+			case(1) :
+				if (t[0].side == 0) {
+					alibi_action(head, s, -1, score);
+				}
+				else {
+					dets_action(0, dets);
+				}
+				break;
+			case(2) :
+				if (t[1].side == 0) {
+					dets_action(2, dets);
+				}
+				else {
+					dets_action(1, dets);
+				}
+				break;
+			case(3) :
+				if (t[2].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					exchange_action(head);
+				}
+				break;
+			case(4) :
+				if (t[3].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					joker_action(-1, dets);
+				}
+				break;
+			default :
+				printf("Wrong button selected!\n Game Aborted.\n");
+				exit(-1);										
+		}
+		Sleep(2500);
+		system("cls");
+		print_map(head, s, o, dets);
+		for (int i = 0; i < 4; i++) {
+			if (i == a || i == b || i == c) {		
+				continue;
+			}
+			printf("Investigator has only one choice %s:\n", t[i].name[t[i].side]);
+			x = i + 1;
+		}
+		switch (x) {
+			case(1) :
+				if (t[0].side == 0) {
+					alibi_action(head, s, -1, score);
+				}
+				else {
+					dets_action(0, dets);
+				}
+				break;
+			case(2) :
+				if (t[1].side == 0) {
+					dets_action(2, dets);
+				}
+				else {
+					dets_action(1, dets);
+				}
+				break;
+			case(3) :
+				if (t[2].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					exchange_action(head);
+				}
+				break;
+			case(4) :
+				if (t[3].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					joker_action(1, dets);
+				}
+				break;
+			default :
+				printf("Wrong button selected!\n Game Aborted.\n");
+				exit(-1);										
+		}
+		Sleep(2500);
+		system("cls");
+		print_map(head, s, o, dets);
+		*turn += 1;
+		return;	
+	}
+	else {
+		for (int i = 0; i < 3; i++) {
+			t[i].side += 1;
+			t[i].side %= 2;
+		}
+		int a, b, c;
+		int x;
+		printf("Mr. Jack should select one of these action tokens: \n");
+		for (int i = 0; i < 4; i++) {
+			printf("%d)%s ", i + 1, t[i].name[t[i].side]);
+			if (i == 3) {
+				printf("\n");
+			}
+		}
+		scanf("%d", &x);
+		a = x - 1;
+		switch (x) {
+			case(1) :
+				if (t[0].side == 0) {
+					alibi_action(head, s, -1, score);
+				}
+				else {
+					dets_action(0, dets);
+				}
+				break;
+			case(2) :
+				if (t[1].side == 0) {
+					dets_action(2, dets);
+				}
+				else {
+					dets_action(1, dets);
+				}
+				break;
+			case(3) :
+				if (t[2].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					exchange_action(head);
+				}
+				break;
+			case(4) :
+				if (t[3].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					joker_action(-1, dets);
+				}
+				break;
+			default :
+				printf("wrong button selected!\n Game Aborted.\n");
+				exit(-1);										
+		}
+		Sleep(2500);
+		system("cls");
+		print_map(head, s, o, dets);
+		printf("Investigator should select one of these action tokens: \n");
+		for (int i = 0; i < 4; i++) {
+			if (i == a) {		
+				continue;
+			}
+			printf("%d)%s ", i + 1, t[i].name[t[i].side]);
+			if (i == 3) {
+				printf("\n");
+			}
+		}
+		scanf("%d", &x);
+		b = x - 1;
+		switch (x) {
+			case(1) :
+				if (t[0].side == 0) {
+					alibi_action(head, s, 1, score);
+				}
+				else {
+					dets_action(0, dets);
+				}
+				break;
+			case(2) :
+				if (t[1].side == 0) {
+					dets_action(2, dets);
+				}
+				else {
+					dets_action(1, dets);
+				}
+				break;
+			case(3) :
+				if (t[2].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					exchange_action(head);
+				}
+				break;
+			case(4) :
+				if (t[3].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					joker_action(1, dets);
+				}
+				break;
+			default :
+				printf("Wrong button selected!\n Game Aborted.\n");
+				exit(-1);										
+		}
+		Sleep(2500);
+		system("cls");
+		print_map(head, s, o, dets);
+		printf("Investigator should select one of these action tokens: \n");
+		for (int i = 0; i < 4; i++) {
+			if (i == a || i == b) {		
+				continue;
+			}
+			printf("%d)%s ", i + 1, t[i].name[t[i].side]);
+			if (i == 3) {
+				printf("\n");
+			}
+		}
+		scanf("%d", &x);
+		c = x - 1;
+		switch (x) {
+			case(1) :
+				if (t[0].side == 0) {
+					alibi_action(head, s, 1, score);
+				}
+				else {
+					dets_action(0, dets);
+				}
+				break;
+			case(2) :
+				if (t[1].side == 0) {
+					dets_action(2, dets);
+				}
+				else {
+					dets_action(1, dets);
+				}
+				break;
+			case(3) :
+				if (t[2].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					exchange_action(head);
+				}
+				break;
+			case(4) :
+				if (t[3].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					joker_action(1, dets);
+				}
+				break;
+			default :
+				printf("Wrong button selected!\n Game Aborted.\n");
+				exit(-1);										
+		}
+		Sleep(2500);
+		system("cls");
+		print_map(head, s, o, dets);
+		for (int i = 0; i < 4; i++) {
+			if (i == a || i == b || i == c) {		
+				continue;
+			}
+			printf("Mr. Jack has only one choice %s:\n", t[i].name[t[i].side]);
+			x = i + 1;
+		}
+		switch (x) {
+			case(1) :
+				if (t[0].side == 0) {
+					alibi_action(head, s, -1, score);
+				}
+				else {
+					dets_action(0, dets);
+				}
+				break;
+			case(2) :
+				if (t[1].side == 0) {
+					dets_action(2, dets);
+				}
+				else {
+					dets_action(1, dets);
+				}
+				break;
+			case(3) :
+				if (t[2].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					exchange_action(head);
+				}
+				break;
+			case(4) :
+				if (t[3].side == 0) {
+					rotation_action(head);
+				}
+				else {
+					joker_action(-1, dets);
+				}
+				break;
+			default :
+				printf("Wrong button selected!\n Game Aborted.\n");
+				exit(-1);										
+		}	
+	}
+	Sleep(2500);
+	system("cls");
+	print_map(head, s, o, dets);
+	*turn += 1;
+	return;
+}
+
+void witness_stage(struct detective *dets, struct node *head, int *score) {
+	struct place **p = calloc(3, sizeof(struct place *));
+	int size[3] = {0};
+	for (int i = 0; i < 3; i++) {
+		if (dets[i].p.c == 0 || dets[i].p.c == 4) {
+			p[i] = horizontal_trace(dets[i].p, head, size + i);
+		}
+		else {
+			p[i] = vertical_trace(dets[i].p, head, size + i);
+		}
+	}
+	if (size[0] == 0 && size[1] == 0 && size[2] == 0) {
+		printf("No one can be seen.\n");
+		*score += 1;
+		return;
+	}
+	int flag = 0;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < size[i]; j++) {
+			struct node *a = head;
+			for (a; a != NULL; a = a->next) {
+				if (a->t.p.c == p[i][j].c && a->t.p.r == p[i][j].r && a->t.is_sus == -1) {
+					printf("Mr. Jack can be seen.\n");
+					flag = 1;
+					break;
+				}
+			}
+		}
+	}
+	if (flag == 0) {
+		printf("Mr. Jack cannot be seen.\n");
+		*score += 1;
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < size[i]; j++) {
+				struct node *n;
+				for (n = head; n != NULL; n = n->next) {
+					if (n->t.p.r == p[i][j].r && n->t.p.c == p[i][j].c && n->t.is_sus == 1) {
+						n->t.is_sus = 0;
+						break;
+					}
+				}
+			}
+		}
+		return;
+	}
+	else {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < size[i]; j++) {
+				struct node *n;
+				for (n = head; n != NULL; n = n->next) {
+					if (n->t.p.r != p[i][j].r && n->t.p.c != p[i][j].c && n->t.is_sus == 1) {
+						n->t.is_sus = 0;
+					}
+				}
+			}
+		}
+		return;
+	}
+}
 
 

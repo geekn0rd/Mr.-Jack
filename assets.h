@@ -9,6 +9,11 @@ struct place {
 	int c;
 };
 
+struct action_token {
+	int side;
+	char name[2][128];
+};
+
 struct suspect {
 	char name[256];
 	int  hourglass;
@@ -39,16 +44,16 @@ void print_dets(struct detective *dets);
 void print_by_rc(int r, int c, struct node *head, struct suspect *s, int *o, struct detective *dets);
 void print_map(struct node *head, struct suspect *susz, int *oriens, struct detective *dets);
 void init_tiles(struct node **head);
-int determine_jack(struct node *head);
+int determine_jack(struct node *head, struct suspect *s);
 void exchange_action(struct node *head);
 void rotation_action(struct node *head);
 void dets_action(int det_id, struct detective *dets);
-void joker_action(int round, struct detective *dets);
-void alibi_action(struct node *head, struct suspect *s, int *score);
-void manhunt_stage();
+void joker_action(int who, struct detective *dets);
+void alibi_action(struct node *head, struct suspect *s, int who, int *score);
+void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct suspect *s, int *score, struct detective *dets, int *o);
 struct place *horizontal_trace(struct place det, struct node *head, int *size);
 struct place *vertical_trace(struct place det, struct node *head, int *size);
-void witness_stage();
+void witness_stage(struct detective *dets, struct node *head, int *score);
 
 
 

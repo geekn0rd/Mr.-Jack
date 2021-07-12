@@ -4,10 +4,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdlib.h>
+#include <windows.h>
 
 int turn = 1;
-int holmes_score = 0;
-int jack_score = 0;
+int jack_hourglass = 0;
 
 int main() {
 	// giving each suspect a dedicated id [0,8]
@@ -15,6 +15,9 @@ int main() {
 		{"Insp. Lestrade", 0}, {"Jeremy Bert", 1}, {"John Pizer", 1},
 		{"John Smith", 1}, {"Joseph Lane", 1}, {"Madame", 2}, 
 		{"Miss Stealthy", 1}, {"Sgt Goodley", 0}, {"William Gull", 1}
+	};
+	struct action_token tokens[4] = {
+		{0, {{"Alibi"}, {"Holmes"}}}, {0, {{"Toby"}, {"Watson"}}}, {0, {{"Rotation"}, {"Exchange"}}}, {0, {{"Rotation"}, {"Joker"}}}
 	};
 	// Ascii chars that look similar to the tiles [0,4]
 	int orientations[4] = {193, 195, 194, 180};
@@ -24,11 +27,28 @@ int main() {
 	};
 	struct node *head = NULL;
 	init_tiles(&head);
-	int mrJack = determine_jack(head);
-	print_tiles(head, suspects, orientations);
-	print_dets(dets);
-	printf("Mr.Jack is : %s\n", suspects[mrJack].name);
+	int mrJack = determine_jack(head, suspects); 
 	print_map(head, suspects, orientations, dets);
+	manhunt_stage(&turn, tokens, head, suspects, &jack_hourglass, dets, orientations);
+	witness_stage(dets, head, &jack_hourglass);
+	print_map(head, suspects, orientations, dets);
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	return 0;
 }
