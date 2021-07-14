@@ -42,7 +42,7 @@ int is_found(struct node *head, int id);
 void print_tiles(struct node *head, struct suspect *s, int *o);
 void print_dets(struct detective *dets);
 void print_by_rc(int r, int c, struct node *head, struct suspect *s, int *o, struct detective *dets);
-void print_map(struct node *head, struct suspect *susz, int *oriens, struct detective *dets);
+void print_map(int turn, int score, struct node *head, struct suspect *susz, int *oriens, struct detective *dets);
 void init_tiles(struct node **head);
 int determine_jack(struct node *head, struct suspect *s);
 void exchange_action(struct node *head);
@@ -54,7 +54,8 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 struct place *horizontal_trace(struct place det, struct node *head, int *size);
 struct place *vertical_trace(struct place det, struct node *head, int *size);
 void witness_stage(struct detective *dets, struct node *head, int *score);
-
+int check_endgame(int turn, int score, struct node *head);
+void start_new_game();
 
 
 

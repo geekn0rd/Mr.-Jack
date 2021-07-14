@@ -6,32 +6,32 @@
 #include <stdlib.h>
 #include <windows.h>
 
-int turn = 1;
-int jack_hourglass = 0;
 
 int main() {
-	// giving each suspect a dedicated id [0,8]
-	struct suspect suspects[9] = {
-		{"Insp. Lestrade", 0}, {"Jeremy Bert", 1}, {"John Pizer", 1},
-		{"John Smith", 1}, {"Joseph Lane", 1}, {"Madame", 2}, 
-		{"Miss Stealthy", 1}, {"Sgt Goodley", 0}, {"William Gull", 1}
-	};
-	struct action_token tokens[4] = {
-		{0, {{"Alibi"}, {"Holmes"}}}, {0, {{"Toby"}, {"Watson"}}}, {0, {{"Rotation"}, {"Exchange"}}}, {0, {{"Rotation"}, {"Joker"}}}
-	};
-	// Ascii chars that look similar to the tiles [0,4]
-	int orientations[4] = {193, 195, 194, 180};
-	// giving each detective a dedicated id [0,3]
-	struct detective dets[3] = {
-		{"Holmes", {1, 0}}, {"Watson", {1, 4}}, {"Toby", {4, 2}}
-	};
-	struct node *head = NULL;
+	int x;
+	while (1) {
+		printf("Main Menu:\n1)Start New Game\n2)Load Game\n3)FYI\n4)Exit\n");
+		scanf("%d", &x);
+		switch (x) {
+			case 1 :
+				start_new_game();
+				break;
+			case 4:
+				exit(0);	
+		}
+	}
+	/*struct node *head = NULL;
 	init_tiles(&head);
-	int mrJack = determine_jack(head, suspects); 
-	print_map(head, suspects, orientations, dets);
+	int mrJack = determine_jack(head, suspects);
+	print_map(turn, jack_hourglass, head, suspects, orientations, dets);
 	manhunt_stage(&turn, tokens, head, suspects, &jack_hourglass, dets, orientations);
 	witness_stage(dets, head, &jack_hourglass);
-	print_map(head, suspects, orientations, dets);
+	check_endgame(turn, jack_hourglass, head);
+	print_map(turn, jack_hourglass, head, suspects, orientations, dets);
+	manhunt_stage(&turn, tokens, head, suspects, &jack_hourglass, dets, orientations);
+	witness_stage(dets, head, &jack_hourglass);
+	check_endgame(turn, jack_hourglass, head);
+	print_map(turn, jack_hourglass, head, suspects, orientations, dets);*/
 	
 	
 	

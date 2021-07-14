@@ -157,7 +157,8 @@ void rotation_action(struct node *head) {
 	return;
 }
 
-void print_map(struct node *head, struct suspect *susz, int *oriens, struct detective *dets) {
+void print_map(int turn, int score, struct node *head, struct suspect *susz, int *oriens, struct detective *dets) {
+	printf("Turn = %d, Mr. Jack's Hourglasses =  %d\n", turn, score);
 	printf("\n");
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
@@ -236,7 +237,6 @@ void joker_action(int who, struct detective *dets) {
 	int x;
 	if (who == -1) {
 		printf("Choose one of the detectives or if you don't want to move any enter 0: \n");
-		scanf("%d", &x);
 	}else {
 		printf("Choose one of the detectives: \n");
 	}
@@ -510,7 +510,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(head, s, o, dets);
+		print_map(*turn, *score, head, s, o, dets);
 		printf("Mr. Jack should select one of these action tokens: \n");
 		for (int i = 0; i < 4; i++) {
 			if (i == a) {		
@@ -562,7 +562,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(head, s, o, dets);
+		print_map(*turn, *score, head, s, o, dets);
 		printf("Mr. Jack should select one of these action tokens: \n");
 		for (int i = 0; i < 4; i++) {
 			if (i == a || i == b) {		
@@ -614,7 +614,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(head, s, o, dets);
+		print_map(*turn, *score, head, s, o, dets);
 		for (int i = 0; i < 4; i++) {
 			if (i == a || i == b || i == c) {		
 				continue;
@@ -661,12 +661,12 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(head, s, o, dets);
+		print_map(*turn, *score, head, s, o, dets);
 		*turn += 1;
 		return;	
 	}
 	else {
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 4; i++) {
 			t[i].side += 1;
 			t[i].side %= 2;
 		}
@@ -720,7 +720,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(head, s, o, dets);
+		print_map(*turn, *score, head, s, o, dets);
 		printf("Investigator should select one of these action tokens: \n");
 		for (int i = 0; i < 4; i++) {
 			if (i == a) {		
@@ -772,7 +772,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(head, s, o, dets);
+		print_map(*turn, *score, head, s, o, dets);
 		printf("Investigator should select one of these action tokens: \n");
 		for (int i = 0; i < 4; i++) {
 			if (i == a || i == b) {		
@@ -824,7 +824,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(head, s, o, dets);
+		print_map(*turn, *score, head, s, o, dets);
 		for (int i = 0; i < 4; i++) {
 			if (i == a || i == b || i == c) {		
 				continue;
@@ -872,7 +872,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 	}
 	Sleep(2500);
 	system("cls");
-	print_map(head, s, o, dets);
+	print_map(*turn, *score, head, s, o, dets);
 	*turn += 1;
 	return;
 }
@@ -891,6 +891,7 @@ void witness_stage(struct detective *dets, struct node *head, int *score) {
 	if (size[0] == 0 && size[1] == 0 && size[2] == 0) {
 		printf("No one can be seen.\n");
 		*score += 1;
+		printf("Mr. Jack gained 1 hourglass.\n");
 		return;
 	}
 	int flag = 0;
@@ -909,6 +910,7 @@ void witness_stage(struct detective *dets, struct node *head, int *score) {
 	if (flag == 0) {
 		printf("Mr. Jack cannot be seen.\n");
 		*score += 1;
+		printf("Mr. Jack gained 1 hourglass.\n");
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < size[i]; j++) {
 				struct node *n;
@@ -920,7 +922,6 @@ void witness_stage(struct detective *dets, struct node *head, int *score) {
 				}
 			}
 		}
-		return;
 	}
 	else {
 		for (int i = 0; i < 3; i++) {
@@ -929,12 +930,89 @@ void witness_stage(struct detective *dets, struct node *head, int *score) {
 				for (n = head; n != NULL; n = n->next) {
 					if (n->t.p.r != p[i][j].r && n->t.p.c != p[i][j].c && n->t.is_sus == 1) {
 						n->t.is_sus = 0;
+						break;
 					}
 				}
 			}
 		}
-		return;
 	}
+	for (int i = 0; i < 3; i++) {
+		free(p[i]);
+	}
+	free(p);
+	return;
+}
+int check_endgame(int turn, int score, struct node *head) {
+	if (turn > 8) {
+		printf("Mr. Jack escaped from the law, Mr. Jack wins.\n");
+		return 1;
+	}
+	else if (score > 5) {
+		printf("Mr. Jack escaped from the law, Mr. Jack wins.\n");
+		return 1;
+	}
+	int susz = 0;
+	struct node *i = head;
+	for (i; i != NULL; i = i->next) {
+		if (i->t.is_sus != 0) {
+			susz += 1;
+		}
+	}
+	if (susz < 2) {
+		printf("Mr. Jack has no alibis, Investigator wins.\n");
+		return 1;
+	}
+	return 0;
 }
 
+void start_new_game() {
+	struct node *head = NULL;
+	int turn = 1, score = 0;
+	// giving each suspect a dedicated id [0,8]
+	struct suspect suspects[9] = {
+		{"Insp. Lestrade", 0}, {"Jeremy Bert", 1}, {"John Pizer", 1},
+		{"John Smith", 1}, {"Joseph Lane", 1}, {"Madame", 2}, 
+		{"Miss Stealthy", 1}, {"Sgt Goodley", 0}, {"William Gull", 1}
+	};
+	struct action_token tokens[4] = {
+		{0, {{"Alibi"}, {"Holmes"}}}, {0, {{"Toby"}, {"Watson"}}}, {0, {{"Rotation"}, {"Exchange"}}}, {0, {{"Rotation"}, {"Joker"}}}
+	};
+	// Ascii chars that look similar to the tiles [0,4]
+	int orientations[4] = {193, 195, 194, 180};
+	// giving each detective a dedicated id [0,3]
+	struct detective dets[3] = {
+		{"Holmes", {1, 0}}, {"Watson", {1, 4}}, {"Toby", {4, 2}}
+	};
 
+	init_tiles(&head);
+	int mrJack = determine_jack(head, suspects);
+	print_map(turn, score, head, suspects, orientations, dets);
+	while (1) {
+		manhunt_stage(&turn, tokens, head, suspects, &score, dets, orientations);
+		witness_stage(dets, head, &score);
+		if(check_endgame(turn, score, head)) {
+			Sleep(2500);
+			system("cls");
+			free(head);
+			return;
+		}
+		
+		int s;
+		printf("End of Turn %d:\n1)Continue\n2)Save and Return to Main Menu\n3)Return to Main Menu Without Saving\n", turn - 1);
+		scanf("%d", &s);
+		switch (s) {
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				Sleep(2500);
+				system("cls");
+				free(head);
+				return;
+				break;
+			default:
+				break;			
+		}
+	}
+}
