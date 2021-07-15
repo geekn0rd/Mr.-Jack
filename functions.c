@@ -157,8 +157,7 @@ void rotation_action(struct node *head) {
 	return;
 }
 
-void print_map(int turn, int score, struct node *head, struct suspect *susz, int *oriens, struct detective *dets) {
-	printf("Turn = %d, Mr. Jack's Hourglasses =  %d\n", turn, score);
+void print_map(struct node *head, struct suspect *susz, int *oriens, struct detective *dets) {
 	printf("\n");
 	for (int i = 0; i < 5; i++) {
 		for (int j = 0; j < 5; j++) {
@@ -510,7 +509,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(*turn, *score, head, s, o, dets);
+		print_map(head, s, o, dets);
 		printf("Mr. Jack should select one of these action tokens: \n");
 		for (int i = 0; i < 4; i++) {
 			if (i == a) {		
@@ -562,7 +561,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(*turn, *score, head, s, o, dets);
+		print_map(head, s, o, dets);
 		printf("Mr. Jack should select one of these action tokens: \n");
 		for (int i = 0; i < 4; i++) {
 			if (i == a || i == b) {		
@@ -614,7 +613,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(*turn, *score, head, s, o, dets);
+		print_map(head, s, o, dets);
 		for (int i = 0; i < 4; i++) {
 			if (i == a || i == b || i == c) {		
 				continue;
@@ -661,7 +660,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(*turn, *score, head, s, o, dets);
+		print_map(head, s, o, dets);
 		*turn += 1;
 		return;	
 	}
@@ -720,7 +719,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(*turn, *score, head, s, o, dets);
+		print_map(head, s, o, dets);
 		printf("Investigator should select one of these action tokens: \n");
 		for (int i = 0; i < 4; i++) {
 			if (i == a) {		
@@ -772,7 +771,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(*turn, *score, head, s, o, dets);
+		print_map(head, s, o, dets);
 		printf("Investigator should select one of these action tokens: \n");
 		for (int i = 0; i < 4; i++) {
 			if (i == a || i == b) {		
@@ -824,7 +823,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 		}
 		Sleep(2500);
 		system("cls");
-		print_map(*turn, *score, head, s, o, dets);
+		print_map(head, s, o, dets);
 		for (int i = 0; i < 4; i++) {
 			if (i == a || i == b || i == c) {		
 				continue;
@@ -872,7 +871,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 	}
 	Sleep(2500);
 	system("cls");
-	print_map(*turn, *score, head, s, o, dets);
+	print_map(head, s, o, dets);
 	*turn += 1;
 	return;
 }
@@ -915,7 +914,7 @@ void witness_stage(struct detective *dets, struct node *head, int *score) {
 			for (int j = 0; j < size[i]; j++) {
 				struct node *n;
 				for (n = head; n != NULL; n = n->next) {
-					if (n->t.p.r == p[i][j].r && n->t.p.c == p[i][j].c && n->t.is_sus == 1) {
+					if (n->t.p.r == p[i][j].r && n->t.p.c == p[i][j].c) {
 						n->t.is_sus = 0;
 						break;
 					}
@@ -924,15 +923,22 @@ void witness_stage(struct detective *dets, struct node *head, int *score) {
 		}
 	}
 	else {
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < size[i]; j++) {
-				struct node *n;
-				for (n = head; n != NULL; n = n->next) {
-					if (n->t.p.r != p[i][j].r && n->t.p.c != p[i][j].c && n->t.is_sus == 1) {
-						n->t.is_sus = 0;
+		struct node *n;
+		for (n = head; n != NULL; n = n->next) {
+			int bul = 0;
+			for (int i = 0; i < 3; i++) {
+				for (int j = 0; j < size[i]; j++) {
+					if (n->t.p.r == p[i][j].r && n->t.p.c == p[i][j].c) {
+						bul = 1;
 						break;
-					}
+					}		
 				}
+				if (bul) {
+					break;
+				}
+				if (i == 2) {
+					n->t.is_sus = 0;
+				}	
 			}
 		}
 	}
@@ -986,22 +992,28 @@ void start_new_game() {
 
 	init_tiles(&head);
 	int mrJack = determine_jack(head, suspects);
-	print_map(turn, score, head, suspects, orientations, dets);
 	while (1) {
+		printf("Turn = %d, Mr. Jack's Hourglasses =  %d\n", turn, score);
+		print_map(head, suspects, orientations, dets);
+		printf("FIRST STAGE - THE MANHUNT\n\n");
 		manhunt_stage(&turn, tokens, head, suspects, &score, dets, orientations);
+		printf("SECOND STAGE - APPEAL FOR WITNESSES\n\n");
 		witness_stage(dets, head, &score);
+		print_map(head, suspects, orientations, dets);
 		if(check_endgame(turn, score, head)) {
-			Sleep(2500);
-			system("cls");
+			printf("Press any key to return to Main Menu.\n");
+			char s;
+			scanf("%c", &s);
 			free(head);
 			return;
 		}
-		
-		int s;
-		printf("End of Turn %d:\n1)Continue\n2)Save and Return to Main Menu\n3)Return to Main Menu Without Saving\n", turn - 1);
-		scanf("%d", &s);
-		switch (s) {
+		int x;
+		printf("End of Turn %d, Mr. Jack's Hourglasses =  %d:\n\n1)Continue\n2)Save and Return to Main Menu\n3)Return to Main Menu Without Saving\n", turn - 1, score);
+		scanf("%d", &x);
+		switch (x) {
 			case 1:
+				Sleep(2500);
+				system("cls");
 				break;
 			case 2:
 				break;
