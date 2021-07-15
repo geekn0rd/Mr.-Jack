@@ -9,6 +9,7 @@
 
 int main() {
 	int x;
+	printf("Welcome to Mr. Jack Simple Editon;)\n\n");
 	while (1) {
 		printf("Main Menu:\n1)Start New Game\n2)Load Game\n3)FYI\n4)Exit\n");
 		scanf("%d", &x);
