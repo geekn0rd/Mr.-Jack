@@ -31,35 +31,8 @@ int main() {
 				exit(0);	
 		}
 	}
-	/*struct node *head = NULL;
-	init_tiles(&head);
-	int mrJack = determine_jack(head, suspects);
-	print_map(turn, jack_hourglass, head, suspects, orientations, dets);
-	manhunt_stage(&turn, tokens, head, suspects, &jack_hourglass, dets, orientations);
-	witness_stage(dets, head, &jack_hourglass);
-	check_endgame(turn, jack_hourglass, head);
-	print_map(turn, jack_hourglass, head, suspects, orientations, dets);
-	manhunt_stage(&turn, tokens, head, suspects, &jack_hourglass, dets, orientations);
-	witness_stage(dets, head, &jack_hourglass);
-	check_endgame(turn, jack_hourglass, head);
-	print_map(turn, jack_hourglass, head, suspects, orientations, dets);*/
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+		
+		
 	return 0;
 }
