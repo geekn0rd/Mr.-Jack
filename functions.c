@@ -972,25 +972,23 @@ int check_endgame(int turn, int score, struct node *head) {
 }
 
 void save_game(int turn, int score, struct node *head, struct detective *dets) {
-	char fn[128];
-	printf("Enter your save file name (+.txt): \n");
-	scanf("%s", fn);
-	FILE *fptr;
-	fptr = fopen(fn, "w");
+	printf("Enter save file name(+.txt): \n");
+	char x[128];
+	scanf("%s", x);
+	FILE *fptr = fopen(x, "w");
 	if (fptr == NULL) {
-		printf("cannot open file!\n");
+		printf("Error opening file!\n");
 		return;
 	}
 	fprintf(fptr, "%d %d\n", turn, score);
 	for (int i = 0; i < 3; i++) {
 		fprintf(fptr, "%d %d %d\n", i, dets[i].p.r, dets[i].p.c);
 	}
-	struct node *n = head;
-	for (n; n != NULL; n = n->next) {
-		fprintf(fptr, "%d %d %d %d %d\n", n->t.sus_id, n->t.is_sus, n->t.orien, n->t.p.r, n->t.p.r);
+	for (struct node *n = head; n != NULL; n = n->next) {
+		fprintf(fptr, "%d %d %d %d %d\n", n->t.sus_id, n->t.is_sus, n->t.orien, n->t.p.r, n->t.p.c);
 	}
-	printf("Game has been saved at %s.\n");
 	fclose(fptr);
+	printf("Game has been saved.\n");
 	return;
 }
 
@@ -1056,3 +1054,80 @@ void start_new_game() {
 	}
 }
 
+void load_game() {
+	struct node *head = NULL;
+	int turn, score;
+	// giving each suspect a dedicated id [0,8]
+	struct suspect suspects[9] = {
+		{"Insp. Lestrade", 0}, {"Jeremy Bert", 1}, {"John Pizer", 1},
+		{"John Smith", 1}, {"Joseph Lane", 1}, {"Madame", 2}, 
+		{"Miss Stealthy", 1}, {"Sgt Goodley", 0}, {"William Gull", 1}
+	};
+	struct action_token tokens[4] = {
+		{0, {{"Alibi"}, {"Holmes"}}}, {0, {{"Toby"}, {"Watson"}}}, {0, {{"Rotation"}, {"Exchange"}}}, {0, {{"Rotation"}, {"Joker"}}}
+	};
+	// Ascii chars that look similar to the tiles [0,4]
+	int orientations[4] = {193, 195, 194, 180};
+	// giving each detective a dedicated id [0,3]
+	struct detective dets[3] = {
+		{"Holmes", {1, 0}}, {"Watson", {1, 4}}, {"Toby", {4, 2}}
+	};
+	printf("Enter save file name (+.txt): \n");
+	char x[128];
+	scanf("%s", x);
+	FILE *fptr = fopen(x, "r");
+	if (fptr == NULL) {
+		printf("Error opening file!\n");
+		return;
+	}
+	fscanf(fptr, "%d %d\n", &turn, &score);
+	for (int i = 0; i < 3; i++) {
+		int x;
+		fscanf(fptr, "%d %d %d\n", &x, &dets[i].p.r, &dets[i].p.c);
+	}
+	for (int i = 0; i < 9; i++) {
+		int sus_id, is_sus, orien, r, c;
+		fscanf(fptr, "%d %d %d %d %d\n", &sus_id, &is_sus, &orien, &r, &c);
+		push_back(&head, sus_id, is_sus, orien, r, c);
+	}
+	fclose(fptr);
+	while (1) {
+		printf("Turn = %d, Mr. Jack's Hourglasses =  %d\n", turn, score);
+		print_map(head, suspects, orientations, dets);
+		printf("FIRST STAGE - THE MANHUNT\n\n");
+		manhunt_stage(&turn, tokens, head, suspects, &score, dets, orientations);
+		printf("SECOND STAGE - APPEAL FOR WITNESSES\n\n");
+		witness_stage(dets, head, &score);
+		print_map(head, suspects, orientations, dets);
+		if(check_endgame(turn, score, head)) {
+			printf("Press any key (then Enter) to return to Main Menu.\n");
+			char s[10];
+			scanf("%s", s);
+			system("cls");
+			free(head);
+			return;
+		}
+		int x;
+		printf("End of Turn %d, Mr. Jack's Hourglasses =  %d:\n\n1)Continue\n2)Save and Return to Main Menu\n3)Return to Main Menu Without Saving\n", turn - 1, score);
+		scanf("%d", &x);
+		switch (x) {
+			case 1:
+				Sleep(2500);
+				system("cls");
+				break;
+			case 2:
+				save_game(turn, score, head, dets);
+				Sleep(3500);
+				system("cls");
+				free(head);
+				return;
+			case 3:
+				Sleep(2500);
+				system("cls");
+				free(head);
+				return;
+			default:
+				break;			
+		}
+	}
+}

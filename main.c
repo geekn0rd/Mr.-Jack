@@ -16,6 +16,9 @@ int main() {
 			case 1 :
 				start_new_game();
 				break;
+			case 2 :
+				load_game();
+				break;
 			case 3 :
 				printf("-Any unexpected input may break the game.\n-"
 				"The game checks end conditons only at end of each turn.\n-For counting rows and column ignore the detectives.\n-Remember your save file's name!\n"
