@@ -56,6 +56,7 @@ struct place *vertical_trace(struct place det, struct node *head, int *size);
 void witness_stage(struct detective *dets, struct node *head, int *score);
 int check_endgame(int turn, int score, struct node *head);
 void start_new_game();
+void save_game(int turn, int score, struct node *head, struct detective *dets);
 
 
 

@@ -971,6 +971,29 @@ int check_endgame(int turn, int score, struct node *head) {
 	return 0;
 }
 
+void save_game(int turn, int score, struct node *head, struct detective *dets) {
+	char fn[128];
+	printf("Enter your save file name (+.txt): \n");
+	scanf("%s", fn);
+	FILE *fptr;
+	fptr = fopen(fn, "w");
+	if (fptr == NULL) {
+		printf("cannot open file!\n");
+		return;
+	}
+	fprintf(fptr, "%d %d\n", turn, score);
+	for (int i = 0; i < 3; i++) {
+		fprintf(fptr, "%d %d %d\n", i, dets[i].p.r, dets[i].p.c);
+	}
+	struct node *n = head;
+	for (n; n != NULL; n = n->next) {
+		fprintf(fptr, "%d %d %d %d %d\n", n->t.sus_id, n->t.is_sus, n->t.orien, n->t.p.r, n->t.p.r);
+	}
+	printf("Game has been saved at %s.\n");
+	fclose(fptr);
+	return;
+}
+
 void start_new_game() {
 	struct node *head = NULL;
 	int turn = 1, score = 0;
@@ -1001,7 +1024,7 @@ void start_new_game() {
 		witness_stage(dets, head, &score);
 		print_map(head, suspects, orientations, dets);
 		if(check_endgame(turn, score, head)) {
-			printf("Press any key then Enter to return to Main Menu.\n");
+			printf("Press any key (then Enter) to return to Main Menu.\n");
 			char s[10];
 			scanf("%s", s);
 			system("cls");
@@ -1017,7 +1040,11 @@ void start_new_game() {
 				system("cls");
 				break;
 			case 2:
-				break;
+				save_game(turn, score, head, dets);
+				Sleep(3500);
+				system("cls");
+				free(head);
+				return;
 			case 3:
 				Sleep(2500);
 				system("cls");
@@ -1028,3 +1055,4 @@ void start_new_game() {
 		}
 	}
 }
+
