@@ -1001,9 +1001,10 @@ void start_new_game() {
 		witness_stage(dets, head, &score);
 		print_map(head, suspects, orientations, dets);
 		if(check_endgame(turn, score, head)) {
-			printf("Press any key to return to Main Menu.\n");
-			char s;
-			scanf("%c", &s);
+			printf("Press any key then Enter to return to Main Menu.\n");
+			char s[10];
+			scanf("%s", s);
+			system("cls");
 			free(head);
 			return;
 		}
@@ -1022,7 +1023,6 @@ void start_new_game() {
 				system("cls");
 				free(head);
 				return;
-				break;
 			default:
 				break;			
 		}
