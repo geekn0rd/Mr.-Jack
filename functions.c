@@ -218,11 +218,13 @@ void alibi_action(struct node *head, struct suspect *s, int who, int *score) {
 	for (i; i != NULL; i = i->next) {
 		if (i->t.sus_id == id) {
 			if (i->t.is_sus == 1) {
-				i->t.is_sus = 0;
 				if (who == -1) {
+					i->t.is_sus = 2;
 					*score += s[id].hourglass;
 					printf("Mr. Jack gained %d hourglass.\n", s[id].hourglass);
+					return;
 				}
+				i->t.is_sus = 0;
 				printf("%s is cleared from suspects.\n", s[id].name);
 				return;
 			}

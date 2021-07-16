@@ -22,7 +22,7 @@ int main() {
 				break;
 			case 3 :
 				printf("-Any unexpected input may break the game.\n-"
-				"The game checks end conditons only at end of each turn.\n-For counting rows and column ignore the detectives.\n-Remember your save file's name!\n"
+				"The game checks end conditons only at end of each turn.\n-For counting rows and columns ignore the detectives.\n-Remember your save file's name!\n"
 				"Press any key (then Enter) to return to Main Menu.\n");
 				char s[10];
 				scanf("%s", s);

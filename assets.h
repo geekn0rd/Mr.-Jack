@@ -27,7 +27,7 @@ struct detective {
 struct tile {
 	int sus_id;
 	int is_sus;
-	// 0 not sus : 1 sus : -1 Mr.Jack
+	// 0 not sus : 1 sus : -1 Mr.Jack : 2 taken by Mr. Jack via alibi action
 	int orien;
 	struct place p;
 };
