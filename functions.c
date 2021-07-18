@@ -509,7 +509,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 				printf("wrong button selected!\n Game Aborted.\n");
 				exit(-1);										
 		}
-		Sleep(2500);
+		Sleep(3000);
 		system("cls");
 		print_map(head, s, o, dets);
 		printf("Mr. Jack should select one of these action tokens: \n");
@@ -561,7 +561,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 				printf("Wrong button selected!\n Game Aborted.\n");
 				exit(-1);										
 		}
-		Sleep(2500);
+		Sleep(3000);
 		system("cls");
 		print_map(head, s, o, dets);
 		printf("Mr. Jack should select one of these action tokens: \n");
@@ -613,7 +613,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 				printf("Wrong button selected!\n Game Aborted.\n");
 				exit(-1);										
 		}
-		Sleep(2500);
+		Sleep(3000);
 		system("cls");
 		print_map(head, s, o, dets);
 		for (int i = 0; i < 4; i++) {
@@ -660,7 +660,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 				printf("Wrong button selected!\n Game Aborted.\n");
 				exit(-1);										
 		}
-		Sleep(2500);
+		Sleep(3000);
 		system("cls");
 		print_map(head, s, o, dets);
 		*turn += 1;
@@ -719,7 +719,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 				printf("wrong button selected!\n Game Aborted.\n");
 				exit(-1);										
 		}
-		Sleep(2500);
+		Sleep(3000);
 		system("cls");
 		print_map(head, s, o, dets);
 		printf("Investigator should select one of these action tokens: \n");
@@ -771,7 +771,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 				printf("Wrong button selected!\n Game Aborted.\n");
 				exit(-1);										
 		}
-		Sleep(2500);
+		Sleep(3000);
 		system("cls");
 		print_map(head, s, o, dets);
 		printf("Investigator should select one of these action tokens: \n");
@@ -823,7 +823,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 				printf("Wrong button selected!\n Game Aborted.\n");
 				exit(-1);										
 		}
-		Sleep(2500);
+		Sleep(3000);
 		system("cls");
 		print_map(head, s, o, dets);
 		for (int i = 0; i < 4; i++) {
@@ -871,7 +871,7 @@ void manhunt_stage(int *turn, struct action_token *t, struct node *head, struct 
 				exit(-1);										
 		}	
 	}
-	Sleep(2500);
+	Sleep(3000);
 	system("cls");
 	print_map(head, s, o, dets);
 	*turn += 1;
@@ -906,6 +906,12 @@ void witness_stage(struct detective *dets, struct node *head, int *score) {
 					break;
 				}
 			}
+			if (flag) {
+				break;
+			}
+		}
+		if (flag) {
+			break;
 		}
 	}
 	if (flag == 0) {
