@@ -912,19 +912,14 @@ void witness_stage(struct detective *dets, struct node *head, int *score) {
 		printf("Mr. Jack cannot be seen.\n");
 		*score += 1;
 		printf("Mr. Jack gained 1 hourglass.\n");
-		struct node *n;
-		for (n = head; n != NULL; n = n->next) {
-			int bul = 0;
-			for (int i = 0; i < 3; i++) {
-				for (int j = 0; j < size[i]; j++) {
+		for (int i = 0; i < 3; i++) {
+			for (int j = 0; j < size[i]; j++) {
+				struct node *n;
+				for (n = head; n != NULL; n = n->next) {
 					if (n->t.p.r == p[i][j].r && n->t.p.c == p[i][j].c) {
 						n->t.is_sus = 0;
-						bul = 1;
 						break;
-					}		
-				}
-				if (bul) {
-					break;
+					}
 				}
 			}
 		}
